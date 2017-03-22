@@ -13,7 +13,7 @@ Az ELTE Projekt Eszközök gyakorlatára készített beadandó. Készült a 2016
 
 ## Futtatás
 
-1. Futtatni így tudjátok: `java -jar recipe_analyzer.jar`.
+1. Futtatni ezzel a parancsal lehet, amit a *target* mappában kell kiadni: `java -jar recipe_analyzer.jar`.
 
 ## Unit tesztek fordítása és futtatása
 
