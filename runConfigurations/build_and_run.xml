@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="build and run" type="JarApplication" factoryName="JAR Application">
+    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+    <option name="JAR_PATH" value="$PROJECT_DIR$/target/recipe_analyzer.jar" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
+    <envs />
+    <method>
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="clean package" run_configuration_type="MavenRunConfiguration" />
+    </method>
+  </configuration>
+</component>
