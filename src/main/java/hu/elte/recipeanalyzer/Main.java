@@ -1,6 +1,8 @@
 package hu.elte.recipeanalyzer;
 
-import org.datavec.api.util.ClassPathResource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
 
 public class Main {
 
@@ -9,8 +11,20 @@ public class Main {
         System.out.println("---");
         System.out.println("PrepareWordVector test run");
 
+        printCategories();
+
         //System.out.println(new ClassPathResource(".").getFile().getAbsolutePath());
-        PrepareWordVector.main(null);
+        //PrepareWordVector.main(null);
         System.out.println("---");
+    }
+
+    private static void printCategories() {
+        try (InputStream inputStream = Main.class.getResourceAsStream("/RecipeData/LabelledRecipes/categories.txt");) {
+            Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
+            String fileContent = scanner.next();
+            System.out.println(fileContent);
+        } catch (IOException e) {
+            System.out.println("Error while reading the categories file.");
+        }
     }
 }
