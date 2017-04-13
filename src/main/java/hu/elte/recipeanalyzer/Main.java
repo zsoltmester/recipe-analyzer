@@ -1,26 +1,30 @@
 package hu.elte.recipeanalyzer;
 
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
 public class Main {
 
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Main.class);
+
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello Recipe Analyzer");
-        System.out.println("---");
-        System.out.println("PrepareWordVector test run");
+        LOGGER.info("Hello Recipe Analyzer");
+        LOGGER.info("---");
+        LOGGER.info("PrepareWordVector test run");
         PrepareWordVector.main(null);
-        System.out.println("---");
+        LOGGER.info("---");
     }
 
     private static void printCategories() {
         try (InputStream inputStream = Main.class.getResourceAsStream("/RecipeData/LabelledRecipes/categories.txt");) {
             Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
             String fileContent = scanner.next();
-            System.out.println(fileContent);
+            LOGGER.info(fileContent);
         } catch (IOException e) {
-            System.out.println("Error while reading the categories file.");
+            LOGGER.error("Error while reading the categories file.");
         }
     }
 }

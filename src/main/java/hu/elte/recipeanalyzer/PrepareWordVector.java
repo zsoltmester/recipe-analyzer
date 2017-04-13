@@ -1,12 +1,12 @@
-/**-
- * This program generates a word-vector from news items stored in resources folder.
- * News File is located at \dl4j-examples\src\main\resources\NewsData\RawNewsToGenerateWordVector.txt
- * Word vector file : \dl4j-examples\src\main\resources\NewsData\NewsWordVector.txt
- * Note :
- * 1) This code is modification of original example named Word2VecRawTextExample.java
- * 2) Word vector generated in this program is used in Training RNN to categorise news headlines.
- * <p>
- * <b></b>KIT Solutions Pvt. Ltd. (www.kitsol.com)</b>
+/*
+  This program generates a word-vector from news items stored in resources folder.
+  News File is located at \dl4j-examples\src\main\resources\NewsData\RawNewsToGenerateWordVector.txt
+  Word vector file : \dl4j-examples\src\main\resources\NewsData\NewsWordVector.txt
+  Note :
+  1) This code is modification of original example named Word2VecRawTextExample.java
+  2) Word vector generated in this program is used in Training RNN to categorise news headlines.
+  <p>
+  <b></b>KIT Solutions Pvt. Ltd. (www.kitsol.com)</b>
  */
 
 package hu.elte.recipeanalyzer;
@@ -18,12 +18,14 @@ import org.deeplearning4j.text.sentenceiterator.SentenceIterator;
 import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.CommonPreprocessor;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
 public class PrepareWordVector {
 
-    //private static Logger log = LoggerFactory.getLogger(PrepareWordVector.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
         File resource = copyResourceToTempFile("/RecipeData/LabelledRecipes/train/0.txt");
@@ -34,7 +36,7 @@ public class PrepareWordVector {
         // Gets Path to Text file
         String filePath = resource.getPath();
 
-        //log.info("Load & Vectorize Sentences....");
+        LOGGER.debug("Load & Vectorize Sentences....");
         // Strip white space before and after for each line
         SentenceIterator iter = new BasicLineIterator(filePath);
         // Split on white spaces in the line to get words
@@ -45,7 +47,7 @@ public class PrepareWordVector {
         //Additionally it forces lower case for all tokens.
         t.setTokenPreProcessor(new CommonPreprocessor());
 
-        //log.info("Building model....");
+        LOGGER.debug("Building model....");
         Word2Vec vec = new Word2Vec.Builder()
                 .minWordFrequency(2)
                 .iterations(5)
@@ -56,12 +58,10 @@ public class PrepareWordVector {
                 .tokenizerFactory(t)
                 .build();
 
-        //log.info("Fitting Word2Vec model....");
+        LOGGER.debug("Fitting Word2Vec model....");
         vec.fit();
 
-        //log.info("Writing word vectors to text file....");
-
-        // Write word vectors to file
+        LOGGER.debug("Writing word vectors to text file....");
         WordVectorSerializer.writeWordVectors(vec, "target/RecipesWordVector.txt");
     }
 
@@ -78,6 +78,7 @@ public class PrepareWordVector {
             }
             file.deleteOnExit();
         } catch (IOException e) {
+            LOGGER.error("Error while creating a temp file.");
             e.printStackTrace();
         }
         return file;
