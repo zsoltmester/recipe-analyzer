@@ -10,11 +10,7 @@ public class Main {
         System.out.println("Hello Recipe Analyzer");
         System.out.println("---");
         System.out.println("PrepareWordVector test run");
-
-        printCategories();
-
-        //System.out.println(new ClassPathResource(".").getFile().getAbsolutePath());
-        //PrepareWordVector.main(null);
+        PrepareWordVector.main(null);
         System.out.println("---");
     }
 
