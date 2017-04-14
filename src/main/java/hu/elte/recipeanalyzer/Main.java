@@ -12,10 +12,6 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         LOGGER.info("Hello Recipe Analyzer");
-        LOGGER.info("---");
-        LOGGER.info("PrepareWordVector test run");
-        PrepareWordVector.main(null);
-        LOGGER.info("---");
     }
 
     private static void printCategories() {

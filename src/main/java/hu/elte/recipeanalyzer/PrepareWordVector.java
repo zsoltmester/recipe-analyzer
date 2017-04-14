@@ -28,7 +28,7 @@ public class PrepareWordVector {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
-        File resource = copyResourceToTempFile("/RecipeData/LabelledRecipes/train/0.txt");
+        File resource = copyResourceToTempFile("/RecipeData/RawRecipesToGenerateWordVector.txt");
         if (resource == null) {
             return;
         }
