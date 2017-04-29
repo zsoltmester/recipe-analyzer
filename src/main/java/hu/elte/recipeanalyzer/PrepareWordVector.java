@@ -27,7 +27,7 @@ import java.io.*;
 
 public class PrepareWordVector {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrepareWordVector.class);
 
     public static void main(String[] args) throws Exception {
         File resource = copyResourceToTempFile("/RecipeData/RawRecipesToGenerateWordVector.txt");
@@ -72,7 +72,7 @@ public class PrepareWordVector {
         try {
             file = File.createTempFile("tmp", null);
             OutputStream outputStream = new FileOutputStream(file);
-            InputStream inputStream = Main.class.getResourceAsStream(resourcePath);
+            InputStream inputStream = PrepareWordVector.class.getResourceAsStream(resourcePath);
             int read;
             byte[] bytes = new byte[1024];
             while ((read = inputStream.read(bytes)) != -1) {
