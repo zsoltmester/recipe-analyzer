@@ -1,4 +1,4 @@
-/**-
+/*
  * Code based on DL4J examples
  * ===========================
  * This is a DataSetIterator that is specialized for the News headlines dataset used in the TrainNews example
@@ -15,7 +15,6 @@
  * </p>
  * <b>KIT Solutions Pvt. Ltd. (www.kitsol.com)</b>
  */
-
 
 package hu.elte.recipeanalyzer;
 
@@ -46,7 +45,6 @@ public class RecipesIterator implements DataSetIterator {
     private final int batchSize;
     private final int vectorSize;
     private final int truncateLength;
-    private int maxLength;
     private final String dataDirectory;
     private final List<Pair<String, List<String>>> categoryData = new ArrayList<>();
     private int cursor = 0;
@@ -86,11 +84,6 @@ public class RecipesIterator implements DataSetIterator {
         }
     }
 
-    public static Builder Builder() {
-        return new Builder();
-    }
-
-
     @Override
     public DataSet next(int num) {
         if (cursor >= this.totalRecipes) throw new NoSuchElementException();
@@ -121,7 +114,7 @@ public class RecipesIterator implements DataSetIterator {
 
         //Second: tokenize recipes and filter out unknown words
         List<List<String>> allTokens = new ArrayList<>(recipes.size());
-        maxLength = 0;
+        int maxLength = 0;
         for (String s : recipes) {
             List<String> tokens = tokenizerFactory.create(s).getTokens();
             List<String> tokensFiltered = new ArrayList<>();
@@ -155,8 +148,8 @@ public class RecipesIterator implements DataSetIterator {
                 String token = tokens.get(j);
                 INDArray vector = wordVectors.getWordVectorMatrix(token);
                 features.put(new INDArrayIndex[]{point(i),
-                    all(),
-                    point(j)}, vector);
+                        all(),
+                        point(j)}, vector);
 
                 temp[1] = j;
                 featuresMask.putScalar(temp, 1.0);
@@ -167,8 +160,7 @@ public class RecipesIterator implements DataSetIterator {
             labelsMask.putScalar(new int[]{i, lastIdx - 1}, 1.0);
         }
 
-        DataSet ds = new DataSet(features, labels, featuresMask, labelsMask);
-        return ds;
+        return new DataSet(features, labels, featuresMask, labelsMask);
     }
 
     /**
@@ -205,8 +197,8 @@ public class RecipesIterator implements DataSetIterator {
             String token = tokens.get(j);
             INDArray vector = wordVectors.getWordVectorMatrix(token);
             features.put(new INDArrayIndex[]{point(0),
-                all(),
-                point(j)}, vector);
+                    all(),
+                    point(j)}, vector);
         }
 
         return features;
@@ -219,14 +211,14 @@ public class RecipesIterator implements DataSetIterator {
         File categories = new File(this.dataDirectory + File.separator + "categories.txt");
 
         try (BufferedReader brCategories = new BufferedReader(new FileReader(categories))) {
-            String temp = "";
+            String temp;
             while ((temp = brCategories.readLine()) != null) {
-                String curFileName = train == true ?
-                    this.dataDirectory + File.separator + "train" + File.separator + temp.split(",")[0] + ".txt" :
-                    this.dataDirectory + File.separator + "test" + File.separator + temp.split(",")[0] + ".txt";
+                String curFileName = train ?
+                        this.dataDirectory + File.separator + "train" + File.separator + temp.split(",")[0] + ".txt" :
+                        this.dataDirectory + File.separator + "test" + File.separator + temp.split(",")[0] + ".txt";
                 File currFile = new File(curFileName);
                 BufferedReader currBR = new BufferedReader((new FileReader(currFile)));
-                String tempCurrLine = "";
+                String tempCurrLine;
                 List<String> tempList = new ArrayList<>();
                 while ((tempCurrLine = currBR.readLine()) != null) {
                     tempList.add(tempCurrLine);
@@ -311,16 +303,11 @@ public class RecipesIterator implements DataSetIterator {
 
     @Override
     public void remove() {
-
     }
 
     @Override
     public DataSetPreProcessor getPreProcessor() {
         throw new UnsupportedOperationException("Not implemented");
-    }
-
-    public int getMaxLength() {
-        return this.maxLength;
     }
 
     public static class Builder {
@@ -366,20 +353,15 @@ public class RecipesIterator implements DataSetIterator {
 
         public RecipesIterator build() {
             return new RecipesIterator(dataDirectory,
-                wordVectors,
-                batchSize,
-                truncateLength,
-                train,
-                tokenizerFactory);
+                    wordVectors,
+                    batchSize,
+                    truncateLength,
+                    train,
+                    tokenizerFactory);
         }
 
         public String toString() {
             return "RecipesIterator";
-            //Todo uncomment when all files are ready
-            /*return "org.deeplearning4j.examples.recurrent.ProcessRecipes.RecipesIterator.Builder(dataDirectory=" +
-                this.dataDirectory + ", wordVectors=" + this.wordVectors +
-                ", batchSize=" + this.batchSize + ", truncateLength="
-                + this.truncateLength + ", train=" + this.train + ")";*/
         }
     }
 }

@@ -1,4 +1,4 @@
-/**-
+/*
  * Code based on DL4J examples
  * ===========================
  * This program trains a RNN to predict category of a news headlines. It uses word vector generated from PrepareWordVector.java.
@@ -34,7 +34,6 @@
 
 package hu.elte.recipeanalyzer;
 
-import org.datavec.api.util.ClassPathResource;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
@@ -55,20 +54,19 @@ import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.DataSet;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
 public class TrainRecipes {
-    public static String userDirectory = "";
-    public static String DATA_PATH = "";
-    public static String WORD_VECTORS_PATH = "";
-    public static WordVectors wordVectors;
-    private static TokenizerFactory tokenizerFactory;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrainRecipes.class);
 
     public static void main(String[] args) throws Exception {
-        userDirectory = new ClassPathResource("RecipeData").getFile().getAbsolutePath() + File.separator;
-        DATA_PATH = userDirectory + "LabelledRecipes";
-        WORD_VECTORS_PATH = userDirectory + "RecipesWordVector.txt";
+        String userDirectory = "/home/zsmester/recipe-analyzer/src/main/resources/RecipeData/"; // TODO copy the contents of this directory in the jar to a temporary directory
+        String dataPath = userDirectory + "LabelledRecipes";
+        String wordVectorsPath = userDirectory + "RecipesWordVector.txt";
 
         int batchSize = 50;     //Number of examples in each minibatch, default 50
         int nEpochs = 100;        //Number of epochs (full passes of training data) to train on, default 1000
@@ -76,28 +74,28 @@ public class TrainRecipes {
 
         //DataSetIterators for training and testing respectively
         //Using AsyncDataSetIterator to do data loading in a separate thread; this may improve performance vs. waiting for data to load
-        wordVectors = WordVectorSerializer.loadTxtVectors(new File(WORD_VECTORS_PATH));
+        WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(new File(wordVectorsPath));
 
         TokenizerFactory tokenizerFactory = new DefaultTokenizerFactory();
         tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
 
         RecipesIterator iTrain = new RecipesIterator.Builder()
-            .dataDirectory(DATA_PATH)
-            .wordVectors(wordVectors)
-            .batchSize(batchSize)
-            .truncateLength(truncateReviewsToLength)
-            .tokenizerFactory(tokenizerFactory)
-            .train(true)
-            .build();
+                .dataDirectory(dataPath)
+                .wordVectors(wordVectors)
+                .batchSize(batchSize)
+                .truncateLength(truncateReviewsToLength)
+                .tokenizerFactory(tokenizerFactory)
+                .train(true)
+                .build();
 
         RecipesIterator iTest = new RecipesIterator.Builder()
-            .dataDirectory(DATA_PATH)
-            .wordVectors(wordVectors)
-            .batchSize(batchSize)
-            .tokenizerFactory(tokenizerFactory)
-            .truncateLength(truncateReviewsToLength)
-            .train(false)
-            .build();
+                .dataDirectory(dataPath)
+                .wordVectors(wordVectors)
+                .batchSize(batchSize)
+                .tokenizerFactory(tokenizerFactory)
+                .truncateLength(truncateReviewsToLength)
+                .train(false)
+                .build();
 
         //DataSetIterator train = new AsyncDataSetIterator(iTrain,1);
         //DataSetIterator test = new AsyncDataSetIterator(iTest,1);
@@ -109,28 +107,28 @@ public class TrainRecipes {
         tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
         //Set up network configuration
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-            .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).iterations(1)
-            .updater(Updater.RMSPROP)
-            .regularization(true).l2(1e-5)
-            .weightInit(WeightInit.XAVIER)
-            .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue).gradientNormalizationThreshold(1.0)
-            .learningRate(0.0018)
-            .list()
-            .layer(0, new GravesLSTM.Builder().nIn(inputNeurons).nOut(200)
-                .activation("softsign").build())
-            .layer(1, new RnnOutputLayer.Builder().activation("softmax")
-                .lossFunction(LossFunctions.LossFunction.MCXENT).nIn(200).nOut(outputs).build())
-            .pretrain(false).backprop(true).build();
+                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).iterations(1)
+                .updater(Updater.RMSPROP)
+                .regularization(true).l2(1e-5)
+                .weightInit(WeightInit.XAVIER)
+                .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue).gradientNormalizationThreshold(1.0)
+                .learningRate(0.0018)
+                .list()
+                .layer(0, new GravesLSTM.Builder().nIn(inputNeurons).nOut(200)
+                        .activation("softsign").build())
+                .layer(1, new RnnOutputLayer.Builder().activation("softmax")
+                        .lossFunction(LossFunctions.LossFunction.MCXENT).nIn(200).nOut(outputs).build())
+                .pretrain(false).backprop(true).build();
 
         MultiLayerNetwork net = new MultiLayerNetwork(conf);
         net.init();
         net.setListeners(new ScoreIterationListener(1));
 
-        System.out.println("Starting training");
+        LOGGER.info("Starting training");
         for (int i = 0; i < nEpochs; i++) {
             net.fit(iTrain);
             iTrain.reset();
-            System.out.println("Epoch " + i + " complete. Starting evaluation:");
+            LOGGER.debug("Epoch " + i + " complete. Starting evaluation:");
 
             //Run evaluation. This is on 25k reviews, so can take some time
             Evaluation evaluation = new Evaluation();
@@ -148,11 +146,11 @@ public class TrainRecipes {
             }
             iTest.reset();
 
-            System.out.println(evaluation.stats());
+            LOGGER.info(evaluation.stats());
         }
 
+        LOGGER.info("Writing the model to the RecipesModel.net file...");
         ModelSerializer.writeModel(net, userDirectory + "RecipesModel.net", true);
-        System.out.println("----- Example complete -----");
     }
 
 }

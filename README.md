@@ -1,8 +1,19 @@
+# TODO
+
+- Kezeljük le azt is, ha olyan szót adtunk meg, ami nincs benne a wrok vector-ban.
+- TrainRecipes.java, TestRecipes.java: A jarban lévő RecipeData mappa egy temp mappába másolása.
+- A maven-assembly-plugin segítségével csak a szükséges fájlokat kéne bemásolni egy jar-ba.
+- Run configurationt létrehozni mindhárom jarnak.
+- Dokumentáció:
+    - Egy összefoglalót írni a projektről a README.md-be, magyarul.
+    - maven-site-plugin bekötése.
+    - Dokumentáció a fordításról és a futtatásról sitedocként, angolul.
+    - Javadoc report bekötése.
+    - A kód strukturáltságának javítása, ezzel együtt javadoc és unit tesztek írása.
+
 # Recipe Analyzer
 
 Az ELTE Projekt Eszközök gyakorlatára készített beadandó. Készült a 2016/17-es tanítása év tavaszi félévében. Készítette: Mészáros Renáta, Vári Csaba, Mester Zsolt.
-
-**TODO** összefoglaló a projektről
 
 ## Fordítás
 
@@ -21,14 +32,12 @@ A unit tesztek automatikusan fordulnak és lefutnak a package fázisnál. Ha egy
 
 ## Dokumentáció fordítása és megtekintése
 
-TODO
-
 ## IntelliJ IDEA integráció
 
 1. Az IDEA legutolsó stabil verzióját töltsétek le [innen](https://www.jetbrains.com/idea/download/).
 2. Importáljátok a projektet: *Import project*, majd válasszátok ki a *pom.xml*-t. A megjelenő ablakban alul van egy *Environment settings...*, itt válasszátok ki, hogy az előre csomagolt helyett a saját 3.3.9-es Maven-eteket használja. Utána tovább addig, amíg az SDK kiválasztó ablakhoz nem kerültök. Itt adjátok hozzá (ha kell) és válasszátok ki a 8-as JDK-t. A végén még egy next és egy finish.
 3. Ha betöltötte a projektet és a jobb alsó sarokban kiírja, hogy *Unregistered VCS root detected*, akkor válasszátok azt, hogy *Add root*.
-4. Zárjátok be az IDEA-t, másoljátok be a *runConfigurations* mappát a *.idea* mappába, majd indítsátok el az IDEA-t. Ezután lesz egy *clean package* nevű conf, ami futtat egy `mvn clean package`-t és egy *compile and run*, ami lefuttatja az előző confot majd elindítja a jar-t.
+4. Zárjátok be az IDEA-t, másoljátok be a *runConfigurations* mappát a *.idea* mappába, majd indítsátok el az IDEA-t. Ezután lesz egy *clean package* nevű conf, ami futtat egy `mvn clean package`-t.
 
 ## Code style
 
