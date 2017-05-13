@@ -32,17 +32,17 @@ Az ELTE Projekt Eszközök gyakorlatára készített beadandó. Készült a 2016
 
 ## Haladó használat
 
-* Resource fájlok
-..1. A recepteket először osszuk szét kategóriánként és egy recept egy sorban legyen.
-..2. Ezeket egyenként osszuk szét tanító és tesztelőhalmazra, úgy hogy az előbbi tartalmazza a receptek nagy részét.
-..3. A categories.txt-be írjuk bele a kategóriákat sorszámokkal.
-* Előkészítés
-..1. A receptek szavait vektorizálni kell, ehhez használjuk a PrepareWordVector-t, ez elkészíti a RecipesWordVector.txt fájlt.
-..2. A modell ekészítéséhez állítsuk be a TrainRecipes-ben a truncate-t, batchsize-t és a epoch-ok számát majd indítsuk el a tanítást.
-..3. A truncate segítségével lekorlátozhatjuk a receptek elemzett részének hosszát.
-..4. A batchsize és az epoch adja meg mennyi ideig tart a tanulás, hosszabb tanulás eseten várható a pontosság növekedése.
-* Használat
-..1. Indítsuk el a TestRecipes-t. A szöveges mezőbe írjuk be a vizsgálni kívánt recept szövegét.
+1. Resource fájlok
+  1. A recepteket először osszuk szét kategóriánként és egy recept egy sorban legyen.
+  2. Ezeket egyenként osszuk szét tanító és tesztelőhalmazra, úgy hogy az előbbi tartalmazza a receptek nagy részét.
+  3. A categories.txt-be írjuk bele a kategóriákat sorszámokkal.
+2. Előkészítés
+  1. A receptek szavait vektorizálni kell, ehhez használjuk a PrepareWordVector-t, ez elkészíti a RecipesWordVector.txt fájlt.
+  2. A modell ekészítéséhez állítsuk be a TrainRecipes-ben a truncate-t, batchsize-t és a epoch-ok számát majd indítsuk el a tanítást.
+  3. A truncate segítségével lekorlátozhatjuk a receptek elemzett részének hosszát.
+  4. A batchsize és az epoch adja meg mennyi ideig tart a tanulás, hosszabb tanulás eseten várható a pontosság növekedése.
+3. Használat
+  1. Indítsuk el a TestRecipes-t. A szöveges mezőbe írjuk be a vizsgálni kívánt recept szövegét.
 
 
 ## Unit tesztek fordítása és futtatása
