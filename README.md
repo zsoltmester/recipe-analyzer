@@ -1,3 +1,8 @@
+# A projectről
+
+A program célja receptek elemzése egy rekurrens neurális háló segítségével. A rekurrens hálók előnye, hogy tetszőleges méretű halmazon dolgozhatunk velük, jelen esetben a receptek mennyisége és hossza változó.
+A tanító adatok fel vannak osztva kategóriákra, például édesség, levesek, stb. A jelenleg használt modell ezen kategóriák alapján lett betanítva, de lehetőség van máshogy rendezni az adatokat és új modellt készíteni.
+
 # TODO
 
 - Kezeljük le azt is, ha olyan szót adtunk meg, ami nincs benne a wrok vector-ban.
@@ -5,7 +10,6 @@
 - A maven-assembly-plugin segítségével csak a szükséges fájlokat kéne bemásolni egy jar-ba.
 - Run configurationt létrehozni mindhárom jarnak.
 - Dokumentáció:
-    - Egy összefoglalót írni a projektről a README.md-be, magyarul.
     - maven-site-plugin bekötése.
     - Dokumentáció a fordításról és a futtatásról sitedocként, angolul.
     - Javadoc report bekötése.
@@ -25,6 +29,21 @@ Az ELTE Projekt Eszközök gyakorlatára készített beadandó. Készült a 2016
 ## Futtatás
 
 1. Futtatni ezzel a parancsal lehet, amit a *target* mappában kell kiadni: `java -jar recipe_analyzer.jar`.
+
+## Haladó használat
+
+* Resource fájlok
+..1. A recepteket először osszuk szét kategóriánként és egy recept egy sorban legyen.
+..2. Ezeket egyenként osszuk szét tanító és tesztelőhalmazra, úgy hogy az előbbi tartalmazza a receptek nagy részét.
+..3. A categories.txt-be írjuk bele a kategóriákat sorszámokkal.
+* Előkészítés
+..1. A receptek szavait vektorizálni kell, ehhez használjuk a PrepareWordVector-t, ez elkészíti a RecipesWordVector.txt fájlt.
+..2. A modell ekészítéséhez állítsuk be a TrainRecipes-ben a truncate-t, batchsize-t és a epoch-ok számát majd indítsuk el a tanítást.
+..3. A truncate segítségével lekorlátozhatjuk a receptek elemzett részének hosszát.
+..4. A batchsize és az epoch adja meg mennyi ideig tart a tanulás, hosszabb tanulás eseten várható a pontosság növekedése.
+* Használat
+..1. Indítsuk el a TestRecipes-t. A szöveges mezőbe írjuk be a vizsgálni kívánt recept szövegét.
+
 
 ## Unit tesztek fordítása és futtatása
 
