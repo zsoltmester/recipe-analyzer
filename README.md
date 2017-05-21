@@ -6,7 +6,6 @@ A tanító adatok fel vannak osztva kategóriákra, például édesség, levesek
 # TODO
 
 - Kezeljük le azt is, ha olyan szót adtunk meg, ami nincs benne a wrok vector-ban.
-- Run configurationt létrehozni mindhárom jarnak.
 - Dokumentáció:
     - maven-site-plugin bekötése.
     - Dokumentáció a fordításról és a futtatásról sitedocként, angolul.
