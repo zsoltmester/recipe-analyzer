@@ -42,7 +42,7 @@ A unit tesztek automatikusan fordulnak és lefutnak a package fázisnál. Ha egy
 
 ## Dokumentáció fordítása és megtekintése
 
-A dokumentációt a `mvn site` paranccsal lehet legenerálni a *target/site* mappába. Megtekinteni az utóbbi mappában az *index.html* megnyitásával lehet.
+A dokumentációt a `mvn site` paranccsal lehet legenerálni a *target/site* mappába. Megtekinteni az utóbbi mappában az *index.html* megnyitásával lehet. A dokumentáció tartalmazza a javadoc-ot is.
 
 ## IntelliJ IDEA integráció
 
