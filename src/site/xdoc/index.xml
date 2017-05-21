@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>Welcome</title>
+    </properties>
+    <body>
+        <section name="Welcome to the Recipe Analyzer documentation!">
+            <p>
+                TODO
+            </p>
+        </section>
+    </body>
+</document>

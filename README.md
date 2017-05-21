@@ -7,7 +7,6 @@ A tanító adatok fel vannak osztva kategóriákra, például édesség, levesek
 
 - Kezeljük le azt is, ha olyan szót adtunk meg, ami nincs benne a wrok vector-ban.
 - Dokumentáció:
-    - maven-site-plugin bekötése.
     - Dokumentáció a fordításról és a futtatásról sitedocként, angolul.
     - Javadoc report bekötése.
     - A kód strukturáltságának javítása, ezzel együtt javadoc és unit tesztek írása.
@@ -42,6 +41,8 @@ Az ELTE Projekt Eszközök gyakorlatára készített beadandó. Készült a 2016
 A unit tesztek automatikusan fordulnak és lefutnak a package fázisnál. Ha egy teszt elhal, akkor a build is elhal. Példa: *SampleJUnitTest*.
 
 ## Dokumentáció fordítása és megtekintése
+
+A dokumentációt a `mvn site` paranccsal lehet legenerálni a *target/site* mappába. Megtekinteni az utóbbi mappában az *index.html* megnyitásával lehet.
 
 ## IntelliJ IDEA integráció
 
