@@ -1,19 +1,16 @@
-# A projectről
-
-A program célja receptek elemzése egy rekurrens neurális háló segítségével. A rekurrens hálók előnye, hogy tetszőleges méretű halmazon dolgozhatunk velük, jelen esetben a receptek mennyisége és hossza változó.
-A tanító adatok fel vannak osztva kategóriákra, például édesség, levesek, stb. A jelenleg használt modell ezen kategóriák alapján lett betanítva, de lehetőség van máshogy rendezni az adatokat és új modellt készíteni.
-
 # TODO
 
 - Kezeljük le azt is, ha olyan szót adtunk meg, ami nincs benne a wrok vector-ban.
 - Dokumentáció:
     - Dokumentáció a fordításról és a futtatásról sitedocként, angolul.
-    - Javadoc report bekötése.
     - A kód strukturáltságának javítása, ezzel együtt javadoc és unit tesztek írása.
 
 # Recipe Analyzer
 
 Az ELTE Projekt Eszközök gyakorlatára készített beadandó. Készült a 2016/17-es tanítása év tavaszi félévében. Készítette: Mészáros Renáta, Vári Csaba, Mester Zsolt.
+
+A program célja receptek elemzése egy rekurrens neurális háló segítségével. A rekurrens hálók előnye, hogy tetszőleges méretű halmazon dolgozhatunk velük, jelen esetben a receptek mennyisége és hossza változó.
+A tanító adatok fel vannak osztva kategóriákra, például édesség, levesek, stb. A jelenleg használt modell ezen kategóriák alapján lett betanítva, de lehetőség van máshogy rendezni az adatokat és új modellt készíteni.
 
 ## Fordítás
 
