@@ -1,9 +1,8 @@
 # TODO
 
 - Kezeljük le azt is, ha olyan szót adtunk meg, ami nincs benne a wrok vector-ban.
-- Dokumentáció:
-    - Dokumentáció a fordításról és a futtatásról sitedocként, angolul.
-    - A kód strukturáltságának javítása, ezzel együtt javadoc és unit tesztek írása.
+- Sitedoc (angolul vagy magyarul, mindegy) a fordításról és a futtatásról.
+- A kód strukturáltságának javítása, ezzel együtt javadoc és unit tesztek írása.
 
 # Recipe Analyzer
 

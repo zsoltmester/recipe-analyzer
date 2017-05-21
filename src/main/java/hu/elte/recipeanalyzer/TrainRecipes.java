@@ -1,37 +1,3 @@
-/*
- * Code based on DL4J examples
- * ===========================
- * This program trains a RNN to predict category of a news headlines. It uses word vector generated from PrepareWordVector.java.
- * - Labeled Recipes are stored in \dl4j-examples\src\main\resources\RecipeData\LabelledRecipes folder in train and test folders.
- * - categories.txt file in \dl4j-examples\src\main\resources\NewsData\LabelledNews folder contains category code and description.
- * - This categories are used along with actual recipes for training.
- * - recipes word vector is contained  in \dl4j-examples\src\main\resources\NewsData\RecipesWordVector.txt file.
- * - Trained model is stored in \dl4j-examples\src\main\resources\NewsData\NewsModel.net file
- * - Recipe Data contains only 5 categories currently.
- * - Data set structure is as given below
- * - categories.txt - this file contains various categories in category id,category description format. Sample categories are as below
- * 0,appetizer
- * 1,dessert
- * 2,main
- * 3,pasta
- * 4,soup
- * - For each category id above, there is a file containing actual recipes
- * - You can add any new category by adding one line in categories.txt and respective recipes file in folder mentioned above.
- * - Below are training results with the news data given with this example.
- * ==========================Scores========================================
- * Accuracy:        0.9343
- * Precision:       0.9249
- * Recall:          0.9327
- * F1 Score:        0.9288
- * ========================================================================
- * <p>
- * Note :
- * - This code is a modification of original example named Word2VecSentimentRNN.java
- * - Results may vary with the data you use to train this network
- * <p>
- * <b>KIT Solutions Pvt. Ltd. (www.kitsol.com)</b>
- */
-
 package hu.elte.recipeanalyzer;
 
 import org.deeplearning4j.eval.Evaluation;
@@ -58,103 +24,157 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 
 import static hu.elte.recipeanalyzer.ResourceManager.copyResourcesFromJar;
 
+/**
+ * Trains a neutral network to label a recipe with a category from a predefined set. You should have a
+ * RecipesWordVector.txt as a jar resource. YOu can use the {@link PrepareWordVector} to generate it.
+ */
 public class TrainRecipes {
 
+    /**
+     * The logger instance for this class.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainRecipes.class);
 
+    /**
+     * The batch size.
+     */
+    private static final int BATCH_SIZE = 50;
+
+    /**
+     * The number of epochs (turns) to run the training.
+     */
+    private static final int NUMBER_OF_EPOCHS = 100;
+
+    /**
+     * As number of words.
+     */
+    private static final int RECIPE_MAX_LENGTH = 300;
+
+    /**
+     * The main method of the {@link TrainRecipes}. No arguments needed.
+     *
+     * @param args Unused.
+     */
     public static void main(String[] args) throws Exception {
-        copyResourcesFromJar(new File(PrepareWordVector.class.getProtectionDomain().getCodeSource().getLocation().getPath()), "/RecipeData/");
 
-        String userDirectory = ResourceManager.RESOURCES_DIRECTORY + "/RecipeData/";
-        String dataPath = userDirectory + "LabelledRecipes";
-        String wordVectorsPath = userDirectory + "RecipesWordVector.txt";
+        // prepare the resources
+        copyResourcesFromJar(ResourceManager.THIS_JAR, "/RecipeData/");
+        String recipesPath = ResourceManager.RESOURCES_DIRECTORY + "/RecipeData/LabelledRecipes";
 
-        int batchSize = 50;     //Number of examples in each minibatch, default 50
-        int nEpochs = 100;        //Number of epochs (full passes of training data) to train on, default 1000
-        int truncateReviewsToLength = 300;  //Truncate reviews with length (# words) greater than this
+        // load the word vectors
+        WordVectors wordVectors = loadWordVectors();
 
-        //DataSetIterators for training and testing respectively
-        //Using AsyncDataSetIterator to do data loading in a separate thread; this may improve performance vs. waiting for data to load
-        WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(new File(wordVectorsPath));
-
+        // create a tokenizer
         TokenizerFactory tokenizerFactory = new DefaultTokenizerFactory();
         tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
 
-        RecipesIterator iTrain = new RecipesIterator.Builder()
-                .dataDirectory(dataPath)
+        // create the training iterator
+        RecipesIterator trainingIterator = new RecipesIterator.Builder()
+                .dataDirectory(recipesPath)
                 .wordVectors(wordVectors)
-                .batchSize(batchSize)
-                .truncateLength(truncateReviewsToLength)
+                .batchSize(BATCH_SIZE)
+                .truncateLength(RECIPE_MAX_LENGTH)
                 .tokenizerFactory(tokenizerFactory)
                 .train(true)
                 .build();
 
-        RecipesIterator iTest = new RecipesIterator.Builder()
-                .dataDirectory(dataPath)
+        // create the testing iterator
+        RecipesIterator testingIterator = new RecipesIterator.Builder()
+                .dataDirectory(recipesPath)
                 .wordVectors(wordVectors)
-                .batchSize(batchSize)
+                .batchSize(BATCH_SIZE)
                 .tokenizerFactory(tokenizerFactory)
-                .truncateLength(truncateReviewsToLength)
+                .truncateLength(RECIPE_MAX_LENGTH)
                 .train(false)
                 .build();
 
-        //DataSetIterator train = new AsyncDataSetIterator(iTrain,1);
-        //DataSetIterator test = new AsyncDataSetIterator(iTest,1);
+        // create the neutral network
+        MultiLayerNetwork neutralNetwork = createNeutralNetwork(wordVectors, trainingIterator.getLabels().size());
 
-        int inputNeurons = wordVectors.getWordVector(wordVectors.vocab().wordAtIndex(0)).length; // 100 in our case
-        int outputs = iTrain.getLabels().size();
-
-        tokenizerFactory = new DefaultTokenizerFactory();
-        tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
-        //Set up network configuration
-        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).iterations(1)
-                .updater(Updater.RMSPROP)
-                .regularization(true).l2(1e-5)
-                .weightInit(WeightInit.XAVIER)
-                .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue).gradientNormalizationThreshold(1.0)
-                .learningRate(0.0018)
-                .list()
-                .layer(0, new GravesLSTM.Builder().nIn(inputNeurons).nOut(200)
-                        .activation("softsign").build())
-                .layer(1, new RnnOutputLayer.Builder().activation("softmax")
-                        .lossFunction(LossFunctions.LossFunction.MCXENT).nIn(200).nOut(outputs).build())
-                .pretrain(false).backprop(true).build();
-
-        MultiLayerNetwork net = new MultiLayerNetwork(conf);
-        net.init();
-        net.setListeners(new ScoreIterationListener(1));
-
-        LOGGER.info("Starting training");
-        for (int i = 0; i < nEpochs; i++) {
-            net.fit(iTrain);
-            iTrain.reset();
+        // train the neutral network
+        LOGGER.info("Training the neutral network...");
+        for (int i = 0; i < NUMBER_OF_EPOCHS; i++) {
+            neutralNetwork.fit(trainingIterator);
+            trainingIterator.reset();
             LOGGER.debug("Epoch " + i + " complete. Starting evaluation:");
 
-            //Run evaluation. This is on 25k reviews, so can take some time
+            // evaluate the results after this iteration
             Evaluation evaluation = new Evaluation();
-            while (iTest.hasNext()) {
-                DataSet t = iTest.next();
+            while (testingIterator.hasNext()) {
+                DataSet t = testingIterator.next();
                 INDArray features = t.getFeatureMatrix();
                 INDArray lables = t.getLabels();
-                //System.out.println("labels : " + lables);
-                INDArray inMask = t.getFeaturesMaskArray();
                 INDArray outMask = t.getLabelsMaskArray();
-                INDArray predicted = net.output(features, false);
-
-                //System.out.println("predicted : " + predicted);
+                INDArray predicted = neutralNetwork.output(features, false);
                 evaluation.evalTimeSeries(lables, predicted, outMask);
             }
-            iTest.reset();
-
-            LOGGER.info(evaluation.stats());
+            testingIterator.reset();
+            LOGGER.debug(evaluation.stats());
         }
 
-        LOGGER.info("Writing the model to the RecipesModel.net file...");
-        ModelSerializer.writeModel(net, userDirectory + "RecipesModel.net", true);
+        // save the model
+        LOGGER.info("Saving the model...");
+        ModelSerializer.writeModel(neutralNetwork, ResourceManager.RESOURCES_DIRECTORY + "/RecipeData/RecipesModel.net", true);
+    }
+
+    /**
+     * Loads the word vectors from the {@code ResourceManager.RESOURCES_DIRECTORY + "/RecipeData/RecipesWordVector.txt"}.
+     *
+     * @return The loaded word vectors.
+     */
+    private static WordVectors loadWordVectors() throws IOException {
+
+        File wordVectorsFile = new File(ResourceManager.RESOURCES_DIRECTORY + "/RecipeData/RecipesWordVector.txt");
+        return WordVectorSerializer.loadTxtVectors(wordVectorsFile);
+    }
+
+    /**
+     * Creates the neutral network based on the given params. You can tune the parameters of the neutral network in this method.
+     *
+     * @param wordVectors            The word vectors.
+     * @param numberOfTrainingLabels The number of the training labels.
+     * @return The created neutral network.
+     */
+    private static MultiLayerNetwork createNeutralNetwork(WordVectors wordVectors, int numberOfTrainingLabels) {
+
+        int inputNeurons = wordVectors.getWordVector(wordVectors.vocab().wordAtIndex(0)).length;
+
+        MultiLayerConfiguration neutralNetworkConfiguration = new NeuralNetConfiguration.Builder()
+                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
+                .iterations(1)
+                .updater(Updater.RMSPROP)
+                .regularization(true)
+                .l2(1e-5)
+                .weightInit(WeightInit.XAVIER)
+                .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
+                .gradientNormalizationThreshold(1.0)
+                .learningRate(0.0018)
+                .list()
+                .layer(0, new GravesLSTM.Builder()
+                        .nIn(inputNeurons)
+                        .nOut(200)
+                        .activation("softsign")
+                        .build())
+                .layer(1, new RnnOutputLayer.Builder()
+                        .activation("softmax")
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)
+                        .nIn(200)
+                        .nOut(numberOfTrainingLabels)
+                        .build())
+                .pretrain(false)
+                .backprop(true)
+                .build();
+
+        MultiLayerNetwork neutralNetwork = new MultiLayerNetwork(neutralNetworkConfiguration);
+        neutralNetwork.init();
+
+        neutralNetwork.setListeners(new ScoreIterationListener(1));
+
+        return neutralNetwork;
     }
 
 }
