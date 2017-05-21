@@ -23,17 +23,20 @@ import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+
+import static hu.elte.recipeanalyzer.ResourceManager.RESOURCES_DIRECTORY;
+import static hu.elte.recipeanalyzer.ResourceManager.copyResourcesFromJar;
 
 public class PrepareWordVector {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PrepareWordVector.class);
 
     public static void main(String[] args) throws Exception {
-        File resource = copyResourceToTempFile("/RecipeData/RawRecipesToGenerateWordVector.txt");
-        if (resource == null) {
-            return;
-        }
+
+        copyResourcesFromJar(new File(PrepareWordVector.class.getProtectionDomain().getCodeSource().getLocation().getPath()), "/RecipeData/");
+
+        File resource = new File(RESOURCES_DIRECTORY + "/RecipeData/RawRecipesToGenerateWordVector.txt");
 
         // Gets Path to Text file
         String filePath = resource.getPath();
@@ -64,25 +67,6 @@ public class PrepareWordVector {
         vec.fit();
 
         LOGGER.debug("Writing word vectors to text file....");
-        WordVectorSerializer.writeWordVectors(vec, "target/RecipesWordVector.txt");
-    }
-
-    private static File copyResourceToTempFile(String resourcePath) {
-        File file = null;
-        try {
-            file = File.createTempFile("tmp", null);
-            OutputStream outputStream = new FileOutputStream(file);
-            InputStream inputStream = PrepareWordVector.class.getResourceAsStream(resourcePath);
-            int read;
-            byte[] bytes = new byte[1024];
-            while ((read = inputStream.read(bytes)) != -1) {
-                outputStream.write(bytes, 0, read);
-            }
-            file.deleteOnExit();
-        } catch (IOException e) {
-            LOGGER.error("Error while creating a temp file.");
-            e.printStackTrace();
-        }
-        return file;
+        WordVectorSerializer.writeWordVectors(vec, RESOURCES_DIRECTORY + "/RecipesWordVector.txt");
     }
 }

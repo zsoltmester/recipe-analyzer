@@ -59,12 +59,16 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
+import static hu.elte.recipeanalyzer.ResourceManager.copyResourcesFromJar;
+
 public class TrainRecipes {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainRecipes.class);
 
     public static void main(String[] args) throws Exception {
-        String userDirectory = "/home/zsmester/recipe-analyzer/src/main/resources/RecipeData/"; // TODO copy the contents of this directory in the jar to a temporary directory
+        copyResourcesFromJar(new File(PrepareWordVector.class.getProtectionDomain().getCodeSource().getLocation().getPath()), "/RecipeData/");
+
+        String userDirectory = ResourceManager.RESOURCES_DIRECTORY + "/RecipeData/";
         String dataPath = userDirectory + "LabelledRecipes";
         String wordVectorsPath = userDirectory + "RecipesWordVector.txt";
 

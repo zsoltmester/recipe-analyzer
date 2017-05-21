@@ -30,6 +30,8 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static hu.elte.recipeanalyzer.ResourceManager.copyResourcesFromJar;
+
 
 public class TestRecipes extends JFrame {
 
@@ -148,10 +150,11 @@ public class TestRecipes extends JFrame {
             }
         }
 
+        copyResourcesFromJar(new File(PrepareWordVector.class.getProtectionDomain().getCodeSource().getLocation().getPath()), "/RecipeData/");
+
         TestRecipes test = new TestRecipes();
         test.setVisible(true);
-
-        userDirectory = "/home/zsmester/recipe-analyzer/src/main/resources/RecipeData/"; // TODO copy the contents of this directory in the jar to a temporary directory
+        userDirectory = ResourceManager.RESOURCES_DIRECTORY + "/RecipeData/";
         String wordVectorsPath = userDirectory + "RecipesWordVector.txt";
         tokenizerFactory = new DefaultTokenizerFactory();
         tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
