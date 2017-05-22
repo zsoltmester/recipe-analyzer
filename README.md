@@ -1,9 +1,3 @@
-# TODO
-
-- Kezeljük le azt is, ha olyan szót adtunk meg, ami nincs benne a wrok vector-ban.
-- Sitedoc (angolul vagy magyarul, mindegy) a fordításról és a futtatásról.
-- A kód strukturáltságának javítása, ezzel együtt javadoc és unit tesztek írása.
-
 # Recipe Analyzer
 
 Az ELTE Projekt Eszközök gyakorlatára készített beadandó. Készült a 2016/17-es tanítása év tavaszi félévében. Készítette: Mészáros Renáta, Vári Csaba, Mester Zsolt.
