@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>Development</title>
+    </properties>
+    <body>
+
+        <macro name="toc"/>
+
+        <section name="Fordítás">
+            <ol>
+                <li>Legyen feltelepítve egy <strong>8-as JDK</strong>.
+                </li>
+                <li>A <strong>JAVA_HOME</strong> környezeti változó az előbbi rootjába mutasson.
+                </li>
+                <li>Legyen feltelepítve egy <strong>3.3.9-es Maven</strong>.
+                </li>
+                <li>Fordítani a pom.xml mappájából lehet a következő paranccsal: <strong>mvn clean package</strong>. A
+                    clean törli a target-et (hogy tiszta lappal induljon a fordítás), a package meg lefordítja a java
+                    forrásfájlokat és megcsinálja a jar-okat. Az utóbbiak a target mappába kerülnek:
+                    prepare-word-vector.jar, train-recipes.jar, test-recipes.jar.
+                </li>
+            </ol>
+        </section>
+
+        <section name="Unit tesztek fordítása és futtatása">
+            A unit tesztek automatikusan fordulnak és lefutnak a package fázisnál. Ha egy teszt elhal, akkor a build is
+            elhal. Példa: <strong>SampleJUnitTest</strong>.
+        </section>
+
+        <section name="Dokumentáció fordítása és megtekintése">
+            A dokumentációt a <strong>mvn site</strong> paranccsal lehet legenerálni a target/site mappába. Megtekinteni
+            az utóbbi mappában az index.html megnyitásával lehet. A dokumentáció tartalmazza a javadoc-ot is.
+        </section>
+
+        <section name="IntelliJ IDEA integráció">
+            <ol>
+                <li>Az IDEA legutolsó stabil verzióját töltsétek le <a href="https://www.jetbrains.com/idea/download/">
+                    innen</a>.
+                </li>
+                <li>Importáljátok a projektet: <strong>Import project</strong>, majd válasszátok ki a pom.xml-t. A
+                    megjelenő ablakban alul van egy Environment settings..., itt válasszátok ki, hogy az előre csomagolt
+                    helyett a saját 3.3.9-es Maven-eteket használja. Utána tovább addig, amíg az SDK kiválasztó ablakhoz
+                    nem kerültök. Itt adjátok hozzá (ha kell) és válasszátok ki a 8-as JDK-t. A végén még egy next és
+                    egy finish.
+                </li>
+                <li>Ha betöltötte a projektet és a jobb alsó sarokban kiírja, hogy <strong>Unregistered VCS root
+                    detected</strong>, akkor válasszátok azt, hogy Add root.
+                </li>
+                <li>Zárjátok be az IDEA-t, másoljátok be a <strong>runConfigurations</strong> mappát a .idea mappába,
+                    majd indítsátok el az IDEA-t. Ezután lesz egy clean package nevű conf, ami futtat egy mvn clean
+                    package-t. Illetve lesz a megfelelő jar-okat futtató konfiguráció is.
+                </li>
+            </ol>
+        </section>
+
+        <section name="Code style">
+            Az IDEA default kódformázóját használjuk, amit a következővel tudunk futtatni: <strong>ctrl + alt +
+            l</strong>.
+        </section>
+
+    </body>
+</document>

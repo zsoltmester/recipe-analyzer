@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+        <title>Usage</title>
+    </properties>
+    <body>
+
+        <section name="Futtatás">
+
+            <subsection name="Resource fájlok">
+                <ol>
+                    <li>A recepteket először osszuk szét kategóriánként és egy recept egy sorban legyen.</li>
+                    <li>Ezeket egyenként osszuk szét tanító és tesztelőhalmazra, úgy hogy az előbbi tartalmazza a
+                        receptek nagy részét.
+                    </li>
+                    <li>A categories.txt-be írjuk bele a kategóriákat sorszámokkal.
+                    </li>
+                </ol>
+            </subsection>
+
+            <subsection name="Előkészítés">
+                <ol>
+                    <li>A receptek szavait vektorizálni kell, ehhez használjuk a PrepareWordVector-t
+                        (prepare-word-vector.jar), ez elkészíti a RecipesWordVector.txt fájlt.
+                    </li>
+                    <li>A modell ekészítéséhez állítsuk be a TrainRecipes-ben (train-recipes.jar) a truncate-t,
+                        batchsize-t és a epoch-ok számát majd indítsuk el a tanítást.
+                    </li>
+                    <li>A truncate segítségével lekorlátozhatjuk a receptek elemzett részének hosszát.
+                    </li>
+                    <li>A batchsize és az epoch adja meg mennyi ideig tart a tanulás, hosszabb tanulás eseten várható a
+                        pontosság növekedése.
+                    </li>
+                </ol>
+            </subsection>
+
+            <subsection name="Használat">
+                Indítsuk el a TestRecipes-t (test-recipes.jar). A szöveges mezőbe írjuk be a vizsgálni kívánt recept
+                szövegét.
+            </subsection>
+
+        </section>
+
+    </body>
+</document>
